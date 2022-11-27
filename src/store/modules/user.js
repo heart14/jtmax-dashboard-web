@@ -14,6 +14,9 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_RETOKEN: (state, retoken) => {
+    state.retoken = retoken
+  },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
   },
@@ -36,8 +39,10 @@ const actions = {
       const loginParam = JSON.stringify({ 'phoneNumber': username.trim(), 'password': password })
       login({ biz: loginParam }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        console.log(data)
+        commit('SET_TOKEN', data.access_token)// 这个commit是什么作用？
+        commit('SET_RETOKEN', data.refresh_token)
+        setToken(data.access_token)
         resolve()
       }).catch(error => {
         reject(error)
