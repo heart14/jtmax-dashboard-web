@@ -1,4 +1,5 @@
-import { login, logout, getInfo } from '@/api/user'
+// import { login, logout, getInfo } from '@/api/user'
+import { login, logout } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -53,29 +54,36 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      // getInfo(state.token).then(response => {
+      // const { data } = response
+      const data = {
+        roles: ['admin'],
+        name: '李李李',
+        avatar: 'https://www.keaidian.com/uploads/allimg/200211/O1.jpg',
+        introduction: 'Super admin'
+      }
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+      if (!data) {
+        reject('Verification failed, please Login again.')
+      }
 
-        const { roles, name, avatar, introduction } = data
+      const { roles, name, avatar, introduction } = data
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+      // roles must be a non-empty array
+      if (!roles || roles.length <= 0) {
+        reject('getInfo: roles must be a non-null array!')
+      }
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      commit('SET_ROLES', roles)
+      commit('SET_NAME', name)
+      commit('SET_AVATAR', avatar)
+      commit('SET_INTRODUCTION', introduction)
+      resolve(data)
     })
+    // .catch(error => {
+    // reject(error)
+    // })
+    // })
   },
 
   // user logout
