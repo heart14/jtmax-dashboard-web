@@ -1,6 +1,6 @@
 // import { login, logout, getInfo } from '@/api/user'
 import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setReToken, removeReToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -44,6 +44,7 @@ const actions = {
         commit('SET_TOKEN', data.access_token)// 这个commit是什么作用？
         commit('SET_RETOKEN', data.refresh_token)
         setToken(data.access_token)
+        setReToken(data.refresh_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -93,6 +94,7 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
+        removeReToken()
         resetRouter()
 
         // reset visited views and cached views
