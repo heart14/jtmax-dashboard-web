@@ -16,9 +16,7 @@ service.interceptors.request.use(
     // do something before request is sent
 
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
+      // 在每个请求的请求头中添加token
       config.headers['Authorization'] = getToken()
     }
     return config
@@ -32,20 +30,10 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
   response => {
     const res = response.data
 
-    // if the custom code is not 20000, it is judged as an error.
+    // if the custom state is not SUCCESS, it is judged as an error.
     if (res.state !== 'SUCCESS') {
       Message({
         message: res.msg || 'Error',
