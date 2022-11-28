@@ -38,7 +38,7 @@ service.interceptors.response.use(
       Message({
         message: res.msg || 'Error',
         type: 'error',
-        duration: 5 * 1000
+        duration: 5 * 1000 // 弹窗持续时间
       })
 
       if (res.code === 9002 || res.code === 9003 || res.code === 9004) {
