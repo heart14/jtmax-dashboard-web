@@ -74,37 +74,38 @@
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
+import { validPhone } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
   components: { SocialSign },
+  // data() 返回的属性将会成为响应式的状态
+  // 并且暴露在 `this` 上
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   // if (!validUsername(value)) {
-    //   //   callback(new Error('Please enter the correct user name'))
-    //   // } else {
-    //   //   callback()
-    //   // }
-    //   callback()
-    // }
+    // 用户名密码验证规则方法
+    const validateUsername = (rule, value, callback) => {
+      if (!validPhone(value)) { // 实际上调用了utils/validate.js里面的正则方法来验证
+        callback(new Error('非法手机号'))
+      } else {
+        callback()
+      }
+      callback()
+    }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value.length < 6) { // 验证密码长度
+        callback(new Error('密码长度过短'))
       } else {
         callback()
       }
     }
-    return {
+    return { // data() 返回的属性将会成为响应式的状态
       loginForm: {
-        biz: {
-          username: 'admin',
-          password: '111111'
-        }
+        username: '', // 页面表单默认placeholder值
+        password: '' // 页面表单默认placeholder值
       },
       loginRules: {
-        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -130,6 +131,8 @@ export default {
   created() {
     // window.addEventListener('storage', this.afterQRScan)
   },
+  // 生命周期钩子会在组件生命周期的各个不同阶段被调用
+  // 例如这个函数就会在组件挂载完成后被调用
   mounted() {
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
@@ -140,28 +143,39 @@ export default {
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
+  // methods 是一些用来更改状态与触发更新的函数
+  // 它们可以在模板中作为事件监听器绑定
   methods: {
+    // 检查大写锁定键状态
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
     },
+    // 显示密码：通过改变input框的type来控制密码是否显示
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
         this.passwordType = 'password'
       }
+      /**
+       * this.$nextTick()将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
+       * 它跟全局方法 Vue.nextTick 一样，不同的是回调的 this 自动绑定到调用它的实例上。
+       * 简单来说就是：等待dom渲染之后再执行，防止页面还未渲染就执行一些函数时，出现找不到方法（undefined）错误
+       */
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
     },
+    // 处理登录
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      // this.$refs.子组件引用  ref值为loginForm的组件  validate()函数配合组件上的:rules使用，进行表单验证
+      this.$refs.loginForm.validate(valid => { // valid为表单validate()结果
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          this.loading = true // element-ui提供的按钮加载状态 点击按钮时有一个转圈加载的小动画
+          this.$store.dispatch('user/login', this.loginForm) // 通过dispatch访问vuex的action方法，含有异步操作，比如向后台提交值：this.$store.dispatch('action方法名',传值)  此处即可在store文件夹下 user.js文件里 找到login方法
+            .then(() => { // .then()方法 异步方法执行完毕后再执行
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery }) // this.$router.push()实现页面跳转  path为跳转的路由地址  此处是从data(){return {}}里面取this.redirect值，取不到的话则取'/'
               this.loading = false
             })
             .catch(() => {
@@ -174,7 +188,7 @@ export default {
       })
     },
     getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
+      return Object.keys(query).reduce((acc, cur) => { // 没看明白
         if (cur !== 'redirect') {
           acc[cur] = query[cur]
         }

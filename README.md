@@ -50,6 +50,14 @@ npm run lint -- --fix
 ## Others
 #### 将请求发送到自己的后台
 https://blog.csdn.net/qq_40596257/article/details/123773945
-##### 二次开发参考
+#### 二次开发参考
 https://blog.csdn.net/qq_39793857/article/details/113605764
 https://blog.csdn.net/weixin_43764814/article/details/101315585
+#### 很不错
+https://www.cnblogs.com/mahmud/p/16833109.html
+#### nexttick
+https://cn.vuejs.org/api/general.html#nexttick
+#### this.$store.dispatch()
+https://www.jb51.net/article/266705.htm
+#### this.$router.push()
+http://www.imxmx.com/Item/1/79069.html
