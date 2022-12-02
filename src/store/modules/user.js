@@ -1,10 +1,11 @@
-// import { login, logout, getInfo } from '@/api/user'
-import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken, setReToken, removeReToken } from '@/utils/auth'
+import { login, logout, getInfo } from '@/api/user'
+import { getToken, setToken, removeToken, setReToken, removeReToken, getReToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  reToken: getReToken(),
+  uid: '',
   name: '',
   avatar: '',
   introduction: '',
@@ -17,6 +18,9 @@ const mutations = {
   },
   SET_RETOKEN: (state, retoken) => {
     state.retoken = retoken
+  },
+  SET_UID: (state, uid) => {
+    state.uid = uid
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -54,36 +58,36 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      // getInfo(state.token).then(response => {
-      // const { data } = response
-      const data = {
-        roles: ['admin'],
-        name: '李李李',
-        avatar: 'https://www.keaidian.com/uploads/allimg/200211/O1.jpg',
-        introduction: 'Super admin'
-      }
+      getInfo(state.token).then(response => {
+        const { data } = response
+        // const data = {
+        //   roles: ['admin'],
+        //   name: '李李李',
+        //   avatar: 'https://www.keaidian.com/uploads/allimg/200211/O1.jpg',
+        //   introduction: 'Super admin'
+        // }
 
-      if (!data) {
-        reject('Verification failed, please Login again.')
-      }
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
 
-      const { roles, name, avatar, introduction } = data
+        const { uid, roles, name, avatar, introduction } = data
 
-      // roles must be a non-empty array
-      if (!roles || roles.length <= 0) {
-        reject('getInfo: roles must be a non-null array!')
-      }
+        // roles must be a non-empty array
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
 
-      commit('SET_ROLES', roles)
-      commit('SET_NAME', name)
-      commit('SET_AVATAR', avatar)
-      commit('SET_INTRODUCTION', introduction)
-      resolve(data)
+        commit('SET_UID', uid)
+        commit('SET_ROLES', roles)
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', avatar)
+        commit('SET_INTRODUCTION', introduction)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
-    // .catch(error => {
-    // reject(error)
-    // })
-    // })
   },
 
   // user logout
