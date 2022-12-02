@@ -95,6 +95,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_RETOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
         removeReToken()
@@ -115,6 +116,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_RETOKEN', '')
       commit('SET_ROLES', [])
       removeToken()
       resolve()
