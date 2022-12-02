@@ -37,8 +37,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      const loginParam = JSON.stringify({ 'phoneNumber': username.trim(), 'password': password })
-      login({ biz: loginParam }).then(response => {
+      login({ 'phoneNumber': username.trim(), 'password': password }).then(response => {
         const { data } = response
         console.log(data)
         commit('SET_TOKEN', data.access_token)// 这个commit是什么作用？

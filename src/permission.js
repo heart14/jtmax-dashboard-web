@@ -17,7 +17,7 @@ router.beforeEach(async(to, from, next) => {
   // set page title
   document.title = getPageTitle(to.meta.title)
 
-  // determine whether the user has logged in
+  // 尝试从cookie取token，确定用户是否已登录
   const hasToken = getToken()
 
   if (hasToken) {
@@ -34,6 +34,7 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
+          console.log('注意看我要getInfo了')
           const { roles } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on roles
