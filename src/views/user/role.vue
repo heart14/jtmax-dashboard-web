@@ -5,17 +5,17 @@
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
       <el-table-column align="center" label="Role Key" width="220">
         <template slot-scope="scope">
-          {{ scope.row.key }}
+          {{ scope.row.roleKey }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="Role Name" width="220">
         <template slot-scope="scope">
-          {{ scope.row.name }}
+          {{ scope.row.roleName }}
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="Description">
         <template slot-scope="scope">
-          {{ scope.row.description }}
+          {{ scope.row.roleDesc }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="Operations">
