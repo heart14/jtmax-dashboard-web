@@ -68,6 +68,7 @@ import { deepClone } from '@/utils'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
+  roleId: '',
   roleKey: '',
   roleName: '',
   roleDesc: '',
@@ -172,17 +173,17 @@ export default {
       })
     },
     handleDelete({ $index, row }) {
-      this.$confirm('Confirm to remove the role?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
+      this.$confirm('确认删除角色?', '删除角色', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async() => {
-          await deleteRole(row.key)
-          this.rolesList.splice($index, 1)
+          await deleteRole(row.roleId)
+          this.rolesList.splice($index, 1)// 这是什么意思
           this.$message({
             type: 'success',
-            message: 'Delete succed!'
+            message: 'Delete succeed!'
           })
         })
         .catch(err => { console.error(err) })
