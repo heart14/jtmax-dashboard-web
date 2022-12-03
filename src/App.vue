@@ -12,7 +12,7 @@ export default {
 
 <style scoped>
 /* 国家哀悼日全站置灰 */
-#app {
+/* #app {
   filter: grayscale(1);
-}
+} */
 </style>
