@@ -28,12 +28,15 @@
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
       <el-form :model="role" label-width="80px" label-position="left">
+        <el-form-item label="Key">
+          <el-input v-model="role.roleKey" placeholder="Role Key" />
+        </el-form-item>
         <el-form-item label="Name">
-          <el-input v-model="role.name" placeholder="Role Name" />
+          <el-input v-model="role.roleName" placeholder="Role Name" />
         </el-form-item>
         <el-form-item label="Desc">
           <el-input
-            v-model="role.description"
+            v-model="role.roleDesc"
             :autosize="{ minRows: 2, maxRows: 4}"
             type="textarea"
             placeholder="Role Description"
@@ -65,9 +68,9 @@ import { deepClone } from '@/utils'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
-  key: '',
-  name: '',
-  description: '',
+  roleKey: '',
+  roleName: '',
+  roleDesc: '',
   routes: []
 }
 
@@ -204,8 +207,8 @@ export default {
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
 
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
+      // const checkedKeys = this.$refs.tree.getCheckedKeys()
+      // this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
       if (isEdit) {
         await updateRole(this.role.key, this.role)
@@ -217,20 +220,15 @@ export default {
         }
       } else {
         const { data } = await addRole(this.role)
-        this.role.key = data.key
+        this.role.roleKey = data.roleKey
         this.rolesList.push(this.role)
       }
 
-      const { description, key, name } = this.role
+      // const { description, key, name } = this.role
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
-        message: `
-              <div>Role Key: ${key}</div>
-              <div>Role Name: ${name}</div>
-              <div>Description: ${description}</div>
-            `,
         type: 'success'
       })
     },

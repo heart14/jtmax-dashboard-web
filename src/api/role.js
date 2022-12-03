@@ -16,7 +16,7 @@ export function getRoles() {
 
 export function addRole(data) {
   return request({
-    url: '/vue-element-admin/role',
+    url: '/role/save',
     method: 'post',
     data
   })
