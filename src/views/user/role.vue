@@ -1,7 +1,9 @@
 <template>
   <div class="app-container">
+    <!-- 新增角色按钮 点击事件：handleAddRole() -->
     <el-button type="primary" @click="handleAddRole">New Role</el-button>
 
+    <!-- 页面列表，展示数据取自rolesList，data()中声明了rolesList，数据来自async getRoles()方法从后台获取 -->
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
       <el-table-column align="center" label="Role Key" width="220">
         <template slot-scope="scope">
@@ -26,6 +28,7 @@
       </el-table-column>
     </el-table>
 
+    <!-- 新增/修改数据弹窗 -->
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Key">
@@ -212,10 +215,10 @@ export default {
       // this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
       if (isEdit) {
-        await updateRole(this.role.key, this.role)
+        await updateRole(this.role.roleId, this.role)
         for (let index = 0; index < this.rolesList.length; index++) {
           if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
+            this.rolesList.splice(index, 1, Object.assign({}, this.role))// Object.assign是什么意思
             break
           }
         }

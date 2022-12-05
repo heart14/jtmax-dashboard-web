@@ -22,17 +22,17 @@ export function addRole(data) {
   })
 }
 
-export function updateRole(id, data) {
+export function updateRole(roleId, data) {
   return request({
-    url: `/vue-element-admin/role/${id}`,
+    url: `/role/${roleId}`,
     method: 'put',
     data
   })
 }
 
-export function deleteRole(id) {
+export function deleteRole(roleId) {
   return request({
-    url: `/role/${id}`,
+    url: `/role/${roleId}`,
     method: 'delete'
   })
 }
