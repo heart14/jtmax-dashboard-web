@@ -130,7 +130,8 @@ export const asyncRoutes = [
         component: () => import('@/views/banner/list'),
         name: 'BannerList',
         meta: {
-          title: '视频放送'
+          title: '视频放送',
+          roles: ['admin', 'mt']
         }
       }
     ]

@@ -45,7 +45,7 @@
             placeholder="Role Description"
           />
         </el-form-item>
-        <el-form-item label="Menus">
+        <!--20221208 <el-form-item label="Menus">
           <el-tree
             ref="tree"
             :check-strictly="checkStrictly"
@@ -55,7 +55,7 @@
             node-key="path"
             class="permission-tree"
           />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
@@ -66,23 +66,24 @@
 </template>
 
 <script>
-import path from 'path'
+// 20221208 import path from 'path'
 import { deepClone } from '@/utils'
-import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
+// 20221208 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
+import { getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
   roleId: '',
   roleKey: '',
   roleName: '',
   roleDesc: '',
-  routes: []
+  permissionList: []
 }
 
 export default {
   data() {
     return {
       role: Object.assign({}, defaultRole),
-      routes: [],
+      // 20221208 routes: [],
       rolesList: [],
       dialogVisible: false,
       dialogType: 'new',
@@ -93,87 +94,87 @@ export default {
       }
     }
   },
-  computed: {
-    routesData() {
-      return this.routes
-    }
-  },
+  // 20221208 computed: {
+  //   routesData() {
+  //     return this.routes
+  //   }
+  // 20221208 },
   created() {
     // Mock: get all routes and roles list from server
-    this.getRoutes()
+    // 20221208 this.getRoutes()
     this.getRoles()
   },
   methods: {
-    async getRoutes() {
-      const res = await getRoutes()
-      this.serviceRoutes = res.data
-      this.routes = this.generateRoutes(res.data)
-    },
+    // 20221208 async getRoutes() {
+    //   const res = await getRoutes()
+    //   this.serviceRoutes = res.data
+    //   this.routes = this.generateRoutes(res.data)
+    // 20221208 },
     async getRoles() {
       const res = await getRoles()
       this.rolesList = res.data
     },
 
     // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
+    // 20221208 generateRoutes(routes, basePath = '/') {
+    //   const res = []
 
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
+    //   for (let route of routes) {
+    //     // skip some route
+    //     if (route.hidden) { continue }
 
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
+    //     const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
 
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
+    //     if (route.children && onlyOneShowingChild && !route.alwaysShow) {
+    //       route = onlyOneShowingChild
+    //     }
 
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
+    //     const data = {
+    //       path: path.resolve(basePath, route.path),
+    //       title: route.meta && route.meta.title
 
-        }
+    //     }
 
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
-      }
-      return res
-    },
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
-    },
+    //     // recursive child routes
+    //     if (route.children) {
+    //       data.children = this.generateRoutes(route.children, data.path)
+    //     }
+    //     res.push(data)
+    //   }
+    //   return res
+    // 20221208 },
+    // 20221208 generateArr(routes) {
+    //   let data = []
+    //   routes.forEach(route => {
+    //     data.push(route)
+    //     if (route.children) {
+    //       const temp = this.generateArr(route.children)
+    //       if (temp.length > 0) {
+    //         data = [...data, ...temp]
+    //       }
+    //     }
+    //   })
+    //   return data
+    // 20221208 },
     handleAddRole() {
       this.role = Object.assign({}, defaultRole)
-      if (this.$refs.tree) {
-        this.$refs.tree.setCheckedNodes([])
-      }
+      // 20221208 if (this.$refs.tree) {
+      //   this.$refs.tree.setCheckedNodes([])
+      // 20221208 }
       this.dialogType = 'new'
       this.dialogVisible = true
     },
     handleEdit(scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
-      this.checkStrictly = true
+      // 20221208 this.checkStrictly = true
       this.role = deepClone(scope.row)
-      this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
-      })
+      // 20221208 this.$nextTick(() => {
+      //   const routes = this.generateRoutes(this.role.permissionList)
+      //   this.$refs.tree.setCheckedNodes(this.generateArr(routes))
+      //   // set checked state of a node not affects its father and child nodes
+      //   this.checkStrictly = false
+      // 20221208 })
     },
     handleDelete({ $index, row }) {
       this.$confirm('确认删除角色?', '删除角色', {
@@ -191,28 +192,28 @@ export default {
         })
         .catch(err => { console.error(err) })
     },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
+    // 20221208 generateTree(routes, basePath = '/', checkedKeys) {
+    //   const res = []
 
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
+    //   for (const route of routes) {
+    //     const routePath = path.resolve(basePath, route.path)
 
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
+    //     // recursive child routes
+    //     if (route.children) {
+    //       route.children = this.generateTree(route.children, routePath, checkedKeys)
+    //     }
 
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
-    },
+    //     if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
+    //       res.push(route)
+    //     }
+    //   }
+    //   return res
+    // 20221208 },
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
 
-      // const checkedKeys = this.$refs.tree.getCheckedKeys()
-      // this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
+      // 20221208 const checkedKeys = this.$refs.tree.getCheckedKeys()
+      // 20221208 this.role.permissionList = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
       if (isEdit) {
         await updateRole(this.role.roleId, this.role)
@@ -225,6 +226,7 @@ export default {
       } else {
         const { data } = await addRole(this.role)
         this.role.roleKey = data.roleKey
+        this.role.roleId = data.roleId
         this.rolesList.push(this.role)
       }
 
@@ -235,27 +237,27 @@ export default {
         dangerouslyUseHTMLString: true,
         type: 'success'
       })
-    },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
     }
+    // 20221208 // reference: src/view/layout/components/Sidebar/SidebarItem.vue
+    // onlyOneShowingChild(children = [], parent) {
+    //   let onlyOneChild = null
+    //   const showingChildren = children.filter(item => !item.hidden)
+
+    //   // When there is only one child route, the child route is displayed by default
+    //   if (showingChildren.length === 1) {
+    //     onlyOneChild = showingChildren[0]
+    //     onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
+    //     return onlyOneChild
+    //   }
+
+    //   // Show parent if there are no child route to display
+    //   if (showingChildren.length === 0) {
+    //     onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+    //     return onlyOneChild
+    //   }
+
+    //   return false
+    // 20221208 }
   }
 }
 </script>
