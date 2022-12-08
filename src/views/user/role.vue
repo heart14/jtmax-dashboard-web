@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 新增角色按钮 点击事件：handleAddRole() -->
-    <el-button type="primary" @click="handleAddRole">New Role</el-button>
+    <el-button type="primary" @click="handleAddRole">新增</el-button>
 
     <!-- 页面列表，展示数据取自rolesList，data()中声明了rolesList，数据来自async getRoles()方法从后台获取 -->
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
@@ -22,14 +22,14 @@
       </el-table-column>
       <el-table-column align="center" label="Operations">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">Delete</el-button>
+          <el-button type="primary" size="small" @click="handleEdit(scope)">修改</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 新增/修改数据弹窗 -->
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改角色':'新增角色'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Key">
           <el-input v-model="role.roleKey" placeholder="Role Key" />
@@ -58,8 +58,8 @@
         </el-form-item> -->
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmRole">确认</el-button>
       </div>
     </el-dialog>
   </div>
