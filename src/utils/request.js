@@ -35,27 +35,28 @@ service.interceptors.response.use(
 
     // if the custom state is not SUCCESS, it is judged as an error.
     if (res.state !== 'SUCCESS') {
-      Message({
-        message: res.msg || 'Error',
-        type: 'error',
-        duration: 5 * 1000 // 弹窗持续时间
-      })
-
-      // 如果返回403，则去刷新token
-      if (res.code === 401) {
-        console.log('该刷新token了')
-      }
-
-      if (res.code === 9002 || res.code === 9003 || res.code === 9004) {
+      if (res.code === 9002) { // 登录失败弹窗提醒
+        Message({
+          message: res.msg + '：用户名或密码错误' || 'Error',
+          type: 'error',
+          duration: 5 * 1000 // 弹窗持续时间
+        })
+      } else if (res.code === 9003) { // token过期重新登录
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
+        })
+      } else { // 其它错误弹窗提醒
+        Message({
+          message: res.msg || 'Error',
+          type: 'error',
+          duration: 5 * 1000 // 弹窗持续时间
         })
       }
       return Promise.reject(new Error(res.msg || 'Error'))
