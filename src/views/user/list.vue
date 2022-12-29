@@ -9,11 +9,20 @@
           </div>
         </template>
       </el-table-column> -->
-      <el-table-column label="昵称">
+      <el-table-column align="right" label="" width="64">
         <template slot-scope="scope">
           <div>
-            <el-avatar :src="scope.row.avatar" /><span>{{ scope.row.nickname }}</span>
+            <div>
+              <el-avatar :src="scope.row.avatar" @error="errorHandler">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
+              </el-avatar>
+            </div>
           </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="昵称">
+        <template slot-scope="scope">
+          {{ scope.row.nickname }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="街头编号">
@@ -100,6 +109,10 @@ export default {
     this.getPlayerList()
   },
   methods: {
+    errorHandler() {
+      return true
+    },
+
     async getPlayerList() {
       const res = await getPlayerList()
       this.playerList = res.data

@@ -41,6 +41,11 @@ service.interceptors.response.use(
         duration: 5 * 1000 // 弹窗持续时间
       })
 
+      // 如果返回403，则去刷新token
+      if (res.code === 401) {
+        console.log('该刷新token了')
+      }
+
       if (res.code === 9002 || res.code === 9003 || res.code === 9004) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
