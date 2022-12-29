@@ -36,3 +36,17 @@ export function deletePlayer(uid) {
     method: 'delete'
   })
 }
+
+export function forbidPlayer(uid) {
+  return request({
+    url: `/player/forbid/${uid}`,
+    method: 'patch'
+  })
+}
+
+export function unForbidPlayer(uid) {
+  return request({
+    url: `/player/unforbid/${uid}`,
+    method: 'patch'
+  })
+}
