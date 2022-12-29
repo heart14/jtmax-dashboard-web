@@ -1,53 +1,63 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAddRole">New Role</el-button>
-
-    <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="Role Key" width="220">
+    <div class="filter-container">
+      <el-input v-model="listQuery.permName" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.permType" placeholder="Imp" clearable style="width: 200px" class="filter-item">
+        <el-option v-for="item in permTypeOptions" :key="item" :label="item" :value="item" />
+      </el-select>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+        Search
+      </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleFilter">
+        新增
+      </el-button>
+      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleFilter">
+        Export
+      </el-button>
+      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        reviewer
+      </el-checkbox>
+    </div>
+    <el-table :data="permissionList" style="width: 100%;margin-top:30px;" stripe>
+      <el-table-column align="center" label="Permission ID" width="220">
         <template slot-scope="scope">
-          {{ scope.row.key }}
+          {{ scope.row.permId }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Role Name" width="220">
+      <el-table-column align="center" label="Permission Name" width="220">
         <template slot-scope="scope">
-          {{ scope.row.name }}
+          {{ scope.row.permName }}
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="Description">
         <template slot-scope="scope">
-          {{ scope.row.description }}
+          {{ scope.row.permDesc }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Operations">
+      <el-table-column align="header-center" label="Permission Type">
+        <template slot-scope="scope">
+          {{ scope.row.permType }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column align="center" label="Operations">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="handleEdit(scope)">Edit</el-button>
           <el-button type="danger" size="small" @click="handleDelete(scope)">Delete</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
-
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
-      <el-form :model="role" label-width="80px" label-position="left">
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Permission':'New Permission'">
+      <el-form :model="permission" label-width="80px" label-position="left">
         <el-form-item label="Name">
-          <el-input v-model="role.name" placeholder="Role Name" />
+          <el-input v-model="permission.name" placeholder="Permission Name" />
         </el-form-item>
         <el-form-item label="Desc">
           <el-input
-            v-model="role.description"
+            v-model="permission.description"
             :autosize="{ minRows: 2, maxRows: 4}"
             type="textarea"
-            placeholder="Role Description"
-          />
-        </el-form-item>
-        <el-form-item label="Menus">
-          <el-tree
-            ref="tree"
-            :check-strictly="checkStrictly"
-            :data="routesData"
-            :props="defaultProps"
-            show-checkbox
-            node-key="path"
-            class="permission-tree"
+            placeholder="Permission Description"
           />
         </el-form-item>
       </el-form>
@@ -60,199 +70,60 @@
 </template>
 
 <script>
-import path from 'path'
-import { deepClone } from '@/utils'
-import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
+// import path from 'path'
+// import { deepClone } from '@/utils'
+// import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
+import { getPermissions } from '@/api/permission'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
-const defaultRole = {
-  key: '',
-  name: '',
-  description: '',
-  routes: []
+const defaultPermission = {
+  permId: '',
+  permName: '',
+  permDesc: '',
+  permType: '',
+  permRoute: '',
+  permIndex: '',
+  permKey: '',
+  parentId: '',
+  status: '',
+  createTime: '',
+  updateTime: ''
 }
 
 export default {
+  components: { Pagination },
   data() {
     return {
-      role: Object.assign({}, defaultRole),
-      routes: [],
-      rolesList: [],
+      permission: Object.assign({}, defaultPermission),
+      permissionList: [],
+      total: 0,
       dialogVisible: false,
       dialogType: 'new',
-      checkStrictly: false,
-      defaultProps: {
-        children: 'children',
-        label: 'title'
+      permTypeOptions: ['MENU', 'BUTTON'],
+      listQuery: {
+        page: 1,
+        limit: 10,
+        permType: undefined,
+        permName: undefined,
+        type: undefined
       }
-    }
-  },
-  computed: {
-    routesData() {
-      return this.routes
     }
   },
   created() {
-    // Mock: get all routes and roles list from server
-    this.getRoutes()
-    this.getRoles()
+    this.getPageList()
   },
   methods: {
-    async getRoutes() {
-      const res = await getRoutes()
-      this.serviceRoutes = res.data
-      this.routes = this.generateRoutes(res.data)
-    },
-    async getRoles() {
-      const res = await getRoles()
-      this.rolesList = res.data
-    },
-
-    // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
-
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
-
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
-
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
-        }
-
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
-      }
-      return res
-    },
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
-    },
-    handleAddRole() {
-      this.role = Object.assign({}, defaultRole)
-      if (this.$refs.tree) {
-        this.$refs.tree.setCheckedNodes([])
-      }
-      this.dialogType = 'new'
-      this.dialogVisible = true
-    },
-    handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.role = deepClone(scope.row)
-      this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
+    getPageList() {
+      this.listLoading = true
+      getPermissions(this.listQuery).then(response => {
+        console.log(response.data)
+        this.permissionList = response.data.list
+        this.total = response.data.total
       })
     },
-    handleDelete({ $index, row }) {
-      this.$confirm('Confirm to remove the role?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      })
-        .then(async() => {
-          await deleteRole(row.key)
-          this.rolesList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: 'Delete succed!'
-          })
-        })
-        .catch(err => { console.error(err) })
-    },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
-
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
-
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
-    },
-    async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
-
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
-
-      if (isEdit) {
-        await updateRole(this.role.key, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
-        }
-      } else {
-        const { data } = await addRole(this.role)
-        this.role.key = data.key
-        this.rolesList.push(this.role)
-      }
-
-      const { description, key, name } = this.role
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-              <div>Role Key: ${key}</div>
-              <div>Role Name: ${name}</div>
-              <div>Description: ${description}</div>
-            `,
-        type: 'success'
-      })
-    },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getPageList()
     }
   }
 }
@@ -260,6 +131,9 @@ export default {
 
   <style lang="scss" scoped>
   .app-container {
+    .filter-item {
+      margin-left: 8px;
+    }
     .roles-table {
       margin-top: 30px;
     }

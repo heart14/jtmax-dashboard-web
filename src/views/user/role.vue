@@ -4,7 +4,7 @@
     <el-button type="primary" @click="handleAddRole">新增</el-button>
 
     <!-- 页面列表，展示数据取自rolesList，data()中声明了rolesList，数据来自async getRoles()方法从后台获取 -->
-    <el-table :data="rolesList" style="width: 100%;margin-top:30px;">
+    <el-table :data="rolesList" style="width: 100%;margin-top:30px;" stripe>
       <el-table-column align="center" label="Role Key" width="220">
         <template slot-scope="scope">
           {{ scope.row.roleKey }}

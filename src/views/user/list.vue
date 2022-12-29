@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
 
-    <el-table :data="playerList" style="width: 100%;margin-top:30px;">
+    <el-table :data="playerList" style="width: 100%;margin-top:30px;" stripe>
       <!-- <el-table-column align="center" label="头像">
         <template slot-scope="scope">
           <div>
