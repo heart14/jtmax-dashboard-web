@@ -8,3 +8,26 @@ export function getPermissions(data) {
     data
   })
 }
+
+export function deletePermission(permId) {
+  return request({
+    url: `/permission/${permId}`,
+    method: 'delete'
+  })
+}
+
+export function updatePermission(permId, data) {
+  return request({
+    url: `/permission/${permId}`,
+    method: 'put',
+    data
+  })
+}
+
+export function addPermission(data) {
+  return request({
+    url: '/permission/save',
+    method: 'post',
+    data
+  })
+}

@@ -11,7 +11,7 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleFilter">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddPermission">
         新增
       </el-button>
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleFilter">
@@ -76,23 +76,45 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Permission':'New Permission'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新增权限'">
       <el-form :model="permission" label-width="80px" label-position="left">
         <el-form-item label="Name">
-          <el-input v-model="permission.name" placeholder="Permission Name" />
+          <el-input v-model="permission.permName" placeholder="Permission Name" />
         </el-form-item>
         <el-form-item label="Desc">
           <el-input
-            v-model="permission.description"
+            v-model="permission.permDesc"
             :autosize="{ minRows: 2, maxRows: 4}"
             type="textarea"
             placeholder="Permission Description"
           />
         </el-form-item>
+        <el-form-item label="Type">
+          <el-select v-model="permission.permType">
+            <el-option v-for="item in permTypeOptions" :key="item" :lavel="item" :value="item" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Route">
+          <el-input v-model="permission.permRoute" placeholder="Permission Route" />
+        </el-form-item>
+        <el-form-item label="Index">
+          <el-input v-model="permission.permIndex" placeholder="Permission Index" />
+        </el-form-item>
+        <el-form-item label="Key">
+          <el-input v-model="permission.permKey" placeholder="Permission Key" />
+        </el-form-item>
+        <el-form-item label="Parent">
+          <el-input v-model="permission.parentId" placeholder="Permission Parent" />
+        </el-form-item>
+        <el-form-item v-if="dialogType==='edit'" label="Status">
+          <el-select v-model="permission.status">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmPermission">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -102,7 +124,8 @@
 // import path from 'path'
 // import { deepClone } from '@/utils'
 // import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
-import { getPermissions } from '@/api/permission'
+import { deepClone } from '@/utils'
+import { getPermissions, updatePermission, addPermission, deletePermission } from '@/api/permission'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const defaultPermission = {
@@ -118,7 +141,6 @@ const defaultPermission = {
   createTime: '',
   updateTime: ''
 }
-
 const statusOptions = [
   { key: '1', display_name: '有效' },
   { key: '0', display_name: '无效' }
@@ -140,8 +162,8 @@ export default {
       permission: Object.assign({}, defaultPermission),
       permissionList: [],
       total: 0,
-      dialogVisible: false,
-      dialogType: 'new',
+      dialogVisible: false, // 控制弹窗显示或者隐藏
+      dialogType: 'new', // 弹窗类型，新增或者编辑
       permTypeOptions: ['MENU', 'BUTTON'],
       statusOptions,
       listQuery: {
@@ -169,6 +191,50 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getPageList()
+    },
+
+    handleAddPermission() {
+      this.permission = Object.assign({}, defaultPermission)
+      this.dialogType = 'new'
+      this.dialogVisible = true
+    },
+    handleEdit(scope) {
+      this.dialogType = 'edit'
+      this.dialogVisible = true
+      this.permission = deepClone(scope.row)
+    },
+    async confirmPermission() {
+      const isEdit = this.dialogType === 'edit'
+
+      if (isEdit) {
+        await updatePermission(this.permission.permId, this.permission)
+      } else {
+        await addPermission(this.permission)
+      }
+      this.getPageList()
+
+      this.dialogVisible = false
+      this.$notify({
+        title: 'Success',
+        dangerouslyUseHTMLString: true,
+        type: 'success'
+      })
+    },
+    handleDelete({ $index, row }) {
+      this.$confirm('该操作不可撤回！确认删除权限?', '删除权限', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await deletePermission(row.permId)
+          this.permissionList.splice($index, 1)// 这是什么意思
+          this.$message({
+            type: 'success',
+            message: 'Delete succeed!'
+          })
+        })
+        .catch(err => { console.error(err) })
     }
   }
 }

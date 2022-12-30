@@ -217,18 +217,14 @@ export default {
 
       if (isEdit) {
         await updateRole(this.role.roleId, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))// Object.assign是什么意思
-            break
-          }
-        }
       } else {
-        const { data } = await addRole(this.role)
-        this.role.roleKey = data.roleKey
-        this.role.roleId = data.roleId
-        this.rolesList.push(this.role)
+        // const { data } = await addRole(this.role)
+        // this.role.roleKey = data.roleKey
+        // this.role.roleId = data.roleId
+        // this.rolesList.push(this.role)
+        await addRole(this.role)
       }
+      this.getRoles()
 
       // const { description, key, name } = this.role
       this.dialogVisible = false
