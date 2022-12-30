@@ -1,25 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.permName" placeholder="权限名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.permName" placeholder="权限名称" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.permType" placeholder="权限类型" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in permTypeOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
+      <!-- TODO 要再加个筛选条件：父权限，下拉框数据从后台查询到所有父权限 -->
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
+        查询
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddPermission">
         新增
       </el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleFilter">
-        Export
-      </el-button>
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
-      </el-checkbox>
     </div>
     <el-table :data="permissionList" style="width: 100%;margin-top:30px;" stripe>
       <el-table-column align="center" label="权限ID">
@@ -183,7 +178,6 @@ export default {
     getPageList() {
       this.listLoading = true
       getPermissions(this.listQuery).then(response => {
-        console.log(response.data)
         this.permissionList = response.data.list
         this.total = response.data.total
       })
