@@ -8,16 +8,23 @@ export function login(data) {
   })
 }
 
-export function getInfo() {
+export function logout() {
   return request({
-    url: '/sys/player_info',
+    url: '/sys/logout',
     method: 'get'
   })
 }
 
-export function logout() {
+export function refreshToken(reToken) {
   return request({
-    url: '/sys/logout',
+    url: `/sys/access_token/${reToken}`,
+    method: 'get'
+  })
+}
+
+export function getInfo() {
+  return request({
+    url: '/sys/player_info',
     method: 'get'
   })
 }
