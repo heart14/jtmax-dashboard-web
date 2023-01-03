@@ -119,6 +119,7 @@ const actions = {
       commit('SET_RETOKEN', '')
       commit('SET_ROLES', [])
       removeToken()
+      removeReToken()
       resolve()
     })
   },

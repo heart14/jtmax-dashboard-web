@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, getReToken, setToken, setReToken } from '@/utils/auth'
-import { refreshToken } from '@/api/user'
+// import { getToken, getReToken, setToken, setReToken } from '@/utils/auth'
+// import { refreshToken } from '@/api/user'
+import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -45,27 +46,14 @@ service.interceptors.response.use(
           duration: 5 * 1000 // 弹窗持续时间
         })
       } else if (res.code === 9003) { // token过期重新登录
-        return refreshToken(getReToken()).then(re => {
-          // console.log(re)
-          // const { token } = re.data
-          // console.log(re.data)
-          // commit('SET_TOKEN', token.access_token)// 这个commit是什么作用？
-          // commit('SET_RETOKEN', token.refresh_token)
-          setToken(re.data.access_token)
-          setReToken(re.data.refresh_token)
-          console.log(response)
-          return service.request(response.config)
-        }).catch(err => {
-          console.log(err)
-          // to re-login
-          MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            store.dispatch('user/resetToken').then(() => {
-              location.reload()
-            })
+        // to re-login
+        MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
           })
         })
       } else { // 其它错误弹窗提醒
