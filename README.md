@@ -61,3 +61,5 @@ https://cn.vuejs.org/api/general.html#nexttick
 https://www.jb51.net/article/266705.htm
 #### this.$router.push()
 http://www.imxmx.com/Item/1/79069.html
+#### 自动刷新token
+https://www.cnblogs.com/huang-guosheng/p/16908977.html

@@ -1,9 +1,8 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-// import { getToken, getReToken, setToken, setReToken } from '@/utils/auth'
-// import { refreshToken } from '@/api/user'
-import { getToken } from '@/utils/auth'
+import { getToken, getReToken, setToken, setReToken } from '@/utils/auth'
+import { refreshToken } from '@/api/user'
 
 // create an axios instance
 const service = axios.create({
@@ -21,8 +20,6 @@ service.interceptors.request.use(
       // 在每个请求的请求头中添加token
       config.headers['Authorization'] = getToken()
     }
-    console.log('请求config')
-    console.log(config)
     return config
   },
   error => {
@@ -45,16 +42,26 @@ service.interceptors.response.use(
           type: 'error',
           duration: 5 * 1000 // 弹窗持续时间
         })
-      } else if (res.code === 9003) { // token过期重新登录
-        // to re-login
-        MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+      } else if (res.code === 9003) { // token过期
+        return refreshToken(getReToken()).then(re => { // 根据refreshToken去后台刷新token
+          if (re.state === 'SUCCESS') { // 刷新token成功
+            setToken(re.data.access_token)
+            setReToken(re.data.refresh_token)
+            console.log('自动刷新token成功')
+            response.config.url = response.config.url.replace('/api', '')// 为什么不这么处理一下url就会重复一个/api导致请求404？？？
+            return service.request(response.config) // 重新发起请求
+          } else {
+            // 刷新token失败，跳转到登录页面
+            MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
+              confirmButtonText: '重新登录',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              store.dispatch('user/resetToken').then(() => {
+                location.reload()
+              })
+            })
+          }
         })
       } else { // 其它错误弹窗提醒
         Message({
