@@ -44,6 +44,7 @@ service.interceptors.response.use(
         })
       } else if (res.code === 9003) { // token过期
         return refreshToken(getReToken()).then(re => { // 根据refreshToken去后台刷新token
+          console.log(re)
           if (re.state === 'SUCCESS') { // 刷新token成功
             setToken(re.data.access_token)
             setReToken(re.data.refresh_token)
@@ -51,17 +52,20 @@ service.interceptors.response.use(
             response.config.url = response.config.url.replace('/api', '')// 为什么不这么处理一下url就会重复一个/api导致请求404？？？
             return service.request(response.config) // 重新发起请求
           } else {
-            // 刷新token失败，跳转到登录页面
-            MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
-              confirmButtonText: '重新登录',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              store.dispatch('user/resetToken').then(() => {
-                location.reload()
-              })
-            })
+            console.log('自动刷新token失败???')
           }
+        })
+      } else if (res.code === 9005) { // 刷新token失败
+        console.log('自动刷新token失败')
+        // 刷新token失败，跳转到登录页面
+        MessageBox.confirm('长时间未操作，您已自动登出系统，请重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
         })
       } else { // 其它错误弹窗提醒
         Message({
