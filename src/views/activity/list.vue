@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column align="header-center" label="集合地点">
         <template slot-scope="scope">
-          {{ scope.row.assemblePlace }}
+          <el-link :href="getAssemblePlaceMapLink(scope)" target="_blank" type="primary">{{ scope.row.assemblePlace }}</el-link>
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="组织者">
@@ -307,6 +307,9 @@ export default {
           })
         })
         .catch(err => { console.error(err) })
+    },
+    getAssemblePlaceMapLink(scope) {
+      return 'https://gaode.com/search?query=' + scope.row.assemblePlace
     }
   }
 }
