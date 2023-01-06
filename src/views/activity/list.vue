@@ -8,6 +8,7 @@
       <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
+      <el-date-picker v-model="value1" type="datetimerange" placeholder="选择日期时间" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -107,7 +108,7 @@
           />
         </el-form-item>
         <el-form-item label="Activity Type">
-          <el-select v-model="activity.activityType">
+          <el-select v-model="activity.activityType" placeholder="活动类型">
             <el-option v-for="item in activityTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
