@@ -91,11 +91,11 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑活动':'新增活动'">
-      <el-form :model="activity" label-width="80px" label-position="left">
-        <el-form-item label="Name">
+      <el-form :model="activity" label-width="120px" label-position="left">
+        <el-form-item label="Activity Name">
           <el-input v-model="activity.activityName" placeholder="活动名称" />
         </el-form-item>
-        <el-form-item label="Desc">
+        <el-form-item label="Activity Desc">
           <el-input
             v-model="activity.activityDesc"
             :autosize="{ minRows: 2, maxRows: 4}"
@@ -103,15 +103,31 @@
             placeholder="活动描述"
           />
         </el-form-item>
-        <el-form-item label="Type">
+        <el-form-item label="Activity Type">
           <el-select v-model="activity.activityType">
             <el-option v-for="item in activityTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Route">
+        <el-form-item label="Organizer">
+          <el-select
+            v-model="activity.activityOrganizer"
+            multiple
+            collapse-tags
+            filterable
+            placeholder="组织者"
+          >
+            <el-option
+              v-for="item in playerList"
+              :key="item.uid"
+              :label="item.nickname"
+              :value="item.uid"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Min Level">
           <el-input v-model="activity.minLevel" placeholder="刷街等级" />
         </el-form-item>
-        <el-form-item label="Index">
+        <el-form-item label="Max Player">
           <el-input v-model="activity.maxPlayer" placeholder="人数限制" />
         </el-form-item>
         <el-form-item v-if="dialogType==='edit'" label="Status">
@@ -134,6 +150,7 @@
 // import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 import { deepClone } from '@/utils'
 import { getActivities, updateActivity, addActivity, deleteActivity } from '@/api/activity'
+import { getPlayerList } from '@/api/player'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const defaultActivity = {
@@ -190,6 +207,7 @@ export default {
     return {
       activity: Object.assign({}, defaultActivity),
       activityList: [],
+      playerList: [],
       total: 0,
       dialogVisible: false, // 控制弹窗显示或者隐藏
       dialogType: 'new', // 弹窗类型，新增或者编辑
@@ -206,8 +224,15 @@ export default {
   },
   created() {
     this.getPageList()
+    this.getPlayerList()
   },
   methods: {
+    getPlayerList() {
+      this.listLoading = true
+      getPlayerList().then(response => {
+        this.playerList = response.data
+      })
+    },
     getPageList() {
       this.listLoading = true
       getActivities(this.listQuery).then(response => {
@@ -229,10 +254,17 @@ export default {
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.activity = deepClone(scope.row)
+      console.log(this.activity.activityOrganizer)
+      if (this.activity.activityOrganizer.trim() !== '' && this.activity.activityOrganizer !== undefined) {
+        this.activity.activityOrganizer = this.activity.activityOrganizer.split(',')
+      }
     },
     async confirmActivity() {
       const isEdit = this.dialogType === 'edit'
 
+      // 接口organizer字段接收字符串，而前端通过下拉多选框得到的是个字符串数组["aaa","bbb",...]，所以要转化成字符串传递过去
+      // 字符串转数组：split  数组转字符串：join
+      this.activity.activityOrganizer = this.activity.activityOrganizer.join(',')
       if (isEdit) {
         await updateActivity(this.activity.activityId, this.activity)
       } else {
