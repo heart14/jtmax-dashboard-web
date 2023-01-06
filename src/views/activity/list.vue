@@ -8,7 +8,7 @@
       <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
-      <el-date-picker v-model="value1" type="datetimerange" placeholder="选择日期时间" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
+      <el-date-picker v-model="datePickerResult" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column align="header-center" label="活动时间">
         <template slot-scope="scope">
-          {{ scope.row.activityTimeStart }} - {{ scope.row.activityTimeEnd }}
+          {{ scope.row.activityTimeStart }} - <br> {{ scope.row.activityTimeEnd }}
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="集合时间">
@@ -216,12 +216,15 @@ export default {
       showDesc: false, // 控制activityDesc和remark列显示或者隐藏
       statusOptions,
       activityTypeOptions,
+      datePickerResult: '',
       listQuery: {
         page: 1,
         limit: 10,
         activityName: undefined,
         activityType: undefined,
-        status: undefined
+        status: undefined,
+        activityDateStart: undefined,
+        activityDateEnd: undefined
       }
     }
   },
@@ -246,6 +249,13 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getPageList()
+      if (this.datePickerResult !== null && this.datePickerResult !== undefined) {
+        this.listQuery.activityDateStart = this.datePickerResult[0]
+        this.listQuery.activityDateEnd = this.datePickerResult[1]
+      } else {
+        this.listQuery.activityDateStart = undefined
+        this.listQuery.activityDateEnd = undefined
+      }
     },
 
     handleAddActivity() {
