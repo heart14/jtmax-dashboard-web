@@ -29,7 +29,7 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
-  devServer: {
+  devServer: { // dev环境下，webpack-dev-server 相关配置
     port: port,
     open: true,
     overlay: {
