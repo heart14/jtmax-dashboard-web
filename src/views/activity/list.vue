@@ -145,9 +145,6 @@
 </template>
 
 <script>
-// import path from 'path'
-// import { deepClone } from '@/utils'
-// import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 import { deepClone } from '@/utils'
 import { getActivities, updateActivity, addActivity, deleteActivity } from '@/api/activity'
 import { getPlayerList } from '@/api/player'
@@ -254,8 +251,8 @@ export default {
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.activity = deepClone(scope.row)
-      console.log(this.activity.activityOrganizer)
       if (this.activity.activityOrganizer.trim() !== '' && this.activity.activityOrganizer !== undefined) {
+        // 将organizer字段字符串转化成字符串数组，从而可以使下拉框对已选中的内容进行初始化
         this.activity.activityOrganizer = this.activity.activityOrganizer.split(',')
       }
     },
