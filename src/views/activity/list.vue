@@ -14,8 +14,11 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAddActivity">
         新增
       </el-button>
+      <el-checkbox v-model="showDesc" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        详细描述
+      </el-checkbox>
     </div>
-    <el-table :data="activityList" style="width: 100%;margin-top:30px;" stripe>
+    <el-table :key="tableKey" :data="activityList" style="width: 100%;margin-top:30px;" stripe>
       <el-table-column align="center" label="活动编号">
         <template slot-scope="scope">
           {{ scope.row.activityId }}
@@ -26,12 +29,12 @@
           {{ scope.row.activityName }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="活动描述">
+      <el-table-column v-if="showDesc" align="header-center" label="活动描述">
         <template slot-scope="scope">
           {{ scope.row.activityDesc }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="活动类型">
+      <el-table-column align="header-center" label="活动类型" width="84px">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.activityType | activityTypeFilter }}</el-tag>
         </template>
@@ -56,12 +59,12 @@
           {{ scope.row.activityOrganizer }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="等级要求">
+      <el-table-column align="header-center" label="等级要求" width="84px">
         <template slot-scope="scope">
           {{ scope.row.minLevel }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="人数限制">
+      <el-table-column align="header-center" label="人数限制" width="84px">
         <template slot-scope="scope">
           {{ scope.row.maxPlayer }}
         </template>
@@ -71,12 +74,12 @@
           {{ scope.row.deadline }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="备注">
+      <el-table-column v-if="showDesc" align="header-center" label="备注">
         <template slot-scope="scope">
           {{ scope.row.remark }}
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="状态">
+      <el-table-column align="header-center" label="状态" width="72px">
         <template slot-scope="scope">
           <!-- {{ scope.row.status }} -->
           <el-tag>{{ scope.row.status | statusFilter }}</el-tag>
@@ -202,12 +205,14 @@ export default {
   },
   data() {
     return {
+      tableKey: 0,
       activity: Object.assign({}, defaultActivity),
       activityList: [],
       playerList: [],
       total: 0,
       dialogVisible: false, // 控制弹窗显示或者隐藏
       dialogType: 'new', // 弹窗类型，新增或者编辑
+      showDesc: false, // 控制activityDesc和remark列显示或者隐藏
       statusOptions,
       activityTypeOptions,
       listQuery: {
