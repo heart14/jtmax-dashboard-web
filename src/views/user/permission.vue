@@ -86,7 +86,7 @@
         </el-form-item>
         <el-form-item label="Type">
           <el-select v-model="permission.permType">
-            <el-option v-for="item in permTypeOptions" :key="item" :lavel="item" :value="item" />
+            <el-option v-for="item in permTypeOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="Route">
