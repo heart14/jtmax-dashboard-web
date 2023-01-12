@@ -20,7 +20,7 @@
       </el-checkbox>
     </div>
     <el-table :key="tableKey" :data="activityList" style="width: 100%;margin-top:30px;" stripe>
-      <el-table-column align="center" label="活动编号">
+      <el-table-column v-if="showDesc" align="center" label="活动编号">
         <template slot-scope="scope">
           {{ scope.row.activityId }}
         </template>
@@ -91,8 +91,9 @@
           <el-tag>{{ scope.row.status | statusFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" width="220px">
         <template slot-scope="scope">
+          <el-button v-if="scope.row.status==0" type="primary" size="small" @click="handlePublish(scope)">发布</el-button>
           <el-button :disabled="scope.row.status==2||scope.row.status==3" type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
           <el-button :disabled="scope.row.status!==0" type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
         </template>
@@ -170,7 +171,7 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { getActivities, updateActivity, addActivity, deleteActivity } from '@/api/activity'
+import { getActivities, updateActivity, addActivity, deleteActivity, publishActivity } from '@/api/activity'
 import { getPlayerList } from '@/api/player'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -370,6 +371,20 @@ export default {
           })
         })
         .catch(err => { console.error(err) })
+    },
+    handlePublish({ row }) {
+      this.$confirm('确认发布该活动?', '发布活动', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        await publishActivity(row.activityId)
+        this.getPageList()
+        this.$message({
+          type: 'success',
+          message: '发布成功!'
+        })
+      }).catch(err => { console.error(err) })
     },
     getPlaceMapLink(p) {
       return 'https://gaode.com/search?query=' + p

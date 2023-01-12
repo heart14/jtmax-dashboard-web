@@ -31,3 +31,11 @@ export function addActivity(data) {
     data
   })
 }
+
+export function publishActivity(activityId) {
+  return request({
+    url: `/activity/publish/${activityId}`,
+    method: 'patch'
+  })
+}
+
