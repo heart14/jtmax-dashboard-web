@@ -8,7 +8,7 @@
       <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
-      <el-date-picker v-model="datePickerResult" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
+      <el-date-picker v-model="datePickerResult" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" class="filter-item" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -128,6 +128,15 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="Activity Time">
+          <el-date-picker v-model="activityTimePickerResult" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
+        </el-form-item>
+        <el-form-item label="Assemble Time">
+          <el-date-picker v-model="activity.assembleTime" type="datetime" placeholder="集合时间" class="filter-item" />
+        </el-form-item>
+        <el-form-item label="Deadline Time">
+          <el-date-picker v-model="activity.deadline" type="datetime" placeholder="截止时间" class="filter-item" />
+        </el-form-item>
         <el-form-item label="Min Level">
           <el-input v-model="activity.minLevel" placeholder="刷街等级" />
         </el-form-item>
@@ -217,6 +226,7 @@ export default {
       statusOptions,
       activityTypeOptions,
       datePickerResult: '',
+      activityTimePickerResult: '',
       listQuery: {
         page: 1,
         limit: 10,
