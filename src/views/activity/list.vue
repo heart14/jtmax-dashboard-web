@@ -100,8 +100,8 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑活动':'新增活动'">
-      <el-form :model="activity" label-width="120px" label-position="left">
-        <el-form-item label="Activity Name">
+      <el-form ref="activity" :rules="formRules" :model="activity" label-width="140px" label-position="left">
+        <el-form-item label="Activity Name" prop="activityName">
           <el-input v-model="activity.activityName" placeholder="活动名称" />
         </el-form-item>
         <el-form-item label="Activity Desc">
@@ -112,12 +112,12 @@
             placeholder="活动描述"
           />
         </el-form-item>
-        <el-form-item label="Activity Type">
+        <el-form-item label="Activity Type" prop="activityType">
           <el-select v-model="activity.activityType" placeholder="活动类型">
             <el-option v-for="item in activityTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Organizer">
+        <el-form-item label="Organizer" prop="activityOrganizer">
           <el-select
             v-model="activity.activityOrganizer"
             multiple
@@ -133,25 +133,25 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Activity Place">
+        <el-form-item label="Activity Place" prop="activityPlace">
           <el-input v-model="activity.activityPlace" placeholder="活动地点" />
         </el-form-item>
-        <el-form-item label="Assemble Place">
+        <el-form-item label="Assemble Place" prop="assemblePlace">
           <el-input v-model="activity.assemblePlace" placeholder="集合地点" />
         </el-form-item>
-        <el-form-item label="Activity Time">
-          <el-date-picker v-model="activityTimePickerResult" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
+        <el-form-item label="Activity Time" prop="activityTimeStart">
+          <el-date-picker v-model="activityTimePickerResult" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" @change="handleActivityTimePickerResult" />
         </el-form-item>
-        <el-form-item label="Assemble Time">
+        <el-form-item label="Assemble Time" prop="assembleTime">
           <el-date-picker v-model="activity.assembleTime" type="datetime" placeholder="集合时间" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
         </el-form-item>
-        <el-form-item label="Deadline Time">
+        <el-form-item label="Deadline Time" prop="deadline">
           <el-date-picker v-model="activity.deadline" type="datetime" placeholder="截止时间" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
         </el-form-item>
-        <el-form-item label="Min Level">
+        <el-form-item label="Min Level" prop="minLevel">
           <el-input v-model="activity.minLevel" placeholder="刷街等级" />
         </el-form-item>
-        <el-form-item label="Max Player">
+        <el-form-item label="Max Player" prop="maxPlayer">
           <el-input v-model="activity.maxPlayer" placeholder="人数限制" />
         </el-form-item>
         <el-form-item v-if="dialogType==='edit'" label="Status">
@@ -214,6 +214,19 @@ const statusKeyValue = statusOptions.reduce((acc, cur) => {
   return acc
 }, {})
 
+const formRules = {
+  activityName: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+  activityType: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
+  activityPlace: [{ required: true, message: '请输入活动地点', trigger: 'blur' }],
+  assemblePlace: [{ required: true, message: '请输入集合地点', trigger: 'blur' }],
+  activityOrganizer: [{ required: true, message: '请选择活动组织者', trigger: 'change' }],
+  activityTimeStart: [{ required: true, message: '请选择活动开始时间', trigger: 'blur' }],
+  assembleTime: [{ required: true, message: '请选择集合时间', trigger: 'blur' }],
+  deadline: [{ required: true, message: '请选择活动报名截止时间', trigger: 'blur' }],
+  minLevel: [{ required: true, message: '请输入刷街等级', trigger: 'blur' }],
+  maxPlayer: [{ required: true, message: '请输入最大人数限制', trigger: 'blur' }]
+}
+
 export default {
   components: { Pagination },
   filters: {
@@ -227,6 +240,7 @@ export default {
   data() {
     return {
       tableKey: 0,
+      formRules,
       activity: Object.assign({}, defaultActivity),
       activityList: [],
       playerList: [],
@@ -280,11 +294,20 @@ export default {
     },
 
     handleAddActivity() {
+      // 加个判断，防止当第一次打开弹窗时，dom中还未渲染，就进行调用，导致报错的问题出现 https://blog.csdn.net/weixin_45393094/article/details/115584032
+      if (this.$refs.activity !== undefined) {
+        // 打开弹窗时，重置字段值和表单校验状态
+        this.$refs.activity.resetFields()
+      }
       this.activity = Object.assign({}, defaultActivity)
       this.dialogType = 'new'
       this.dialogVisible = true
     },
     handleEdit(scope) {
+      if (this.$refs.activity !== undefined) {
+        // 打开弹窗时，重置字段值和表单校验状态
+        this.$refs.activity.resetFields()
+      }
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.activity = deepClone(scope.row)
@@ -296,14 +319,27 @@ export default {
       this.activityTimePickerResult = (this.activity.activityTimeStart + ',' + this.activity.activityTimeEnd).split(',')
     },
     async confirmActivity() {
+      // 定义变量保存表单验证结果
+      let validateResult = false
+      // 进行表单验证
+      this.$refs.activity.validate((valid) => {
+        if (valid) {
+          validateResult = true
+        } else {
+          alert('未完成')
+        }
+      })
+      if (!validateResult) {
+        // 如果表单校验不通过，返回表格填写界面
+        return
+      }
+
       const isEdit = this.dialogType === 'edit'
 
       // 接口organizer字段接收字符串，而前端通过下拉多选框得到的是个字符串数组["aaa","bbb",...]，所以要转化成字符串传递过去
       // 字符串转数组：split  数组转字符串：join
       this.activity.activityOrganizer = this.activity.activityOrganizer.join(',')
-      // 将活动时间选择器结果设置到活动开始时间、结束时间字段
-      this.activity.activityTimeStart = this.activityTimePickerResult[0]
-      this.activity.activityTimeEnd = this.activityTimePickerResult[1]
+
       this.activityTimePickerResult = '' // 用完进行初始化，防止下次打开弹窗时还留着上次选择的时间
       if (isEdit) {
         await updateActivity(this.activity.activityId, this.activity)
@@ -337,6 +373,11 @@ export default {
     },
     getPlaceMapLink(p) {
       return 'https://gaode.com/search?query=' + p
+    },
+    handleActivityTimePickerResult(val) {
+      // 将活动时间选择器结果设置到活动开始时间、结束时间字段
+      this.activity.activityTimeStart = this.activityTimePickerResult[0]
+      this.activity.activityTimeEnd = this.activityTimePickerResult[1]
     }
   }
 }
