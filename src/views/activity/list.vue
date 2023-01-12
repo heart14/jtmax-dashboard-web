@@ -258,8 +258,8 @@ export default {
         activityName: undefined,
         activityType: undefined,
         status: undefined,
-        activityDateStart: undefined,
-        activityDateEnd: undefined
+        assembleDateStart: undefined,
+        assembleDateEnd: undefined
       }
     }
   },
@@ -285,11 +285,11 @@ export default {
       this.listQuery.page = 1
       this.getPageList()
       if (this.datePickerResult !== null && this.datePickerResult !== undefined) {
-        this.listQuery.activityDateStart = this.datePickerResult[0]
-        this.listQuery.activityDateEnd = this.datePickerResult[1]
+        this.listQuery.assembleDateStart = this.datePickerResult[0]
+        this.listQuery.assembleDateEnd = this.datePickerResult[1]
       } else {
-        this.listQuery.activityDateStart = undefined
-        this.listQuery.activityDateEnd = undefined
+        this.listQuery.assembleDateStart = undefined
+        this.listQuery.assembleDateEnd = undefined
       }
     },
 
