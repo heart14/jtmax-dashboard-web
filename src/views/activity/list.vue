@@ -50,9 +50,14 @@
           {{ scope.row.assembleTime }}
         </template>
       </el-table-column>
+      <el-table-column align="header-center" label="活动地点">
+        <template slot-scope="scope">
+          <el-link :href="getPlaceMapLink(scope.row.activityPlace)" target="_blank" type="primary">{{ scope.row.activityPlace }}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column align="header-center" label="集合地点">
         <template slot-scope="scope">
-          <el-link :href="getAssemblePlaceMapLink(scope)" target="_blank" type="primary">{{ scope.row.assemblePlace }}</el-link>
+          <el-link :href="getPlaceMapLink(scope.row.assemblePlace)" target="_blank" type="primary">{{ scope.row.assemblePlace }}</el-link>
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="组织者">
@@ -128,14 +133,20 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="Activity Place">
+          <el-input v-model="activity.activityPlace" placeholder="活动地点" />
+        </el-form-item>
+        <el-form-item label="Assemble Place">
+          <el-input v-model="activity.assemblePlace" placeholder="集合地点" />
+        </el-form-item>
         <el-form-item label="Activity Time">
-          <el-date-picker v-model="activityTimePickerResult" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" class="filter-item" />
+          <el-date-picker v-model="activityTimePickerResult" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
         </el-form-item>
         <el-form-item label="Assemble Time">
-          <el-date-picker v-model="activity.assembleTime" type="datetime" placeholder="集合时间" class="filter-item" />
+          <el-date-picker v-model="activity.assembleTime" type="datetime" placeholder="集合时间" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
         </el-form-item>
         <el-form-item label="Deadline Time">
-          <el-date-picker v-model="activity.deadline" type="datetime" placeholder="截止时间" class="filter-item" />
+          <el-date-picker v-model="activity.deadline" type="datetime" placeholder="截止时间" value-format="yyyy-MM-dd HH:mm:ss" class="filter-item" />
         </el-form-item>
         <el-form-item label="Min Level">
           <el-input v-model="activity.minLevel" placeholder="刷街等级" />
@@ -281,6 +292,8 @@ export default {
         // 将organizer字段字符串转化成字符串数组，从而可以使下拉框对已选中的内容进行初始化
         this.activity.activityOrganizer = this.activity.activityOrganizer.split(',')
       }
+      // 将活动开始结束时间转化成字符串数组，从而使活动时间选择器初始化
+      this.activityTimePickerResult = (this.activity.activityTimeStart + ',' + this.activity.activityTimeEnd).split(',')
     },
     async confirmActivity() {
       const isEdit = this.dialogType === 'edit'
@@ -288,6 +301,10 @@ export default {
       // 接口organizer字段接收字符串，而前端通过下拉多选框得到的是个字符串数组["aaa","bbb",...]，所以要转化成字符串传递过去
       // 字符串转数组：split  数组转字符串：join
       this.activity.activityOrganizer = this.activity.activityOrganizer.join(',')
+      // 将活动时间选择器结果设置到活动开始时间、结束时间字段
+      this.activity.activityTimeStart = this.activityTimePickerResult[0]
+      this.activity.activityTimeEnd = this.activityTimePickerResult[1]
+      this.activityTimePickerResult = '' // 用完进行初始化，防止下次打开弹窗时还留着上次选择的时间
       if (isEdit) {
         await updateActivity(this.activity.activityId, this.activity)
       } else {
@@ -318,8 +335,8 @@ export default {
         })
         .catch(err => { console.error(err) })
     },
-    getAssemblePlaceMapLink(scope) {
-      return 'https://gaode.com/search?query=' + scope.row.assemblePlace
+    getPlaceMapLink(p) {
+      return 'https://gaode.com/search?query=' + p
     }
   }
 }
