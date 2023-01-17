@@ -39,3 +39,11 @@ export function publishActivity(activityId) {
   })
 }
 
+// 带筛选条件分页查询
+export function getActivityPlayerInfo(data) {
+  return request({
+    url: '/activity_player/page_list',
+    method: 'post',
+    data
+  })
+}
