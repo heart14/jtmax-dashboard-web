@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input v-model="listQuery.activityName" placeholder="活动名称" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.nickname" placeholder="AKA" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+      </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -45,11 +50,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
   </div>
 </template>
 
 <script>
 import { getActivityPlayerInfo } from '@/api/activity'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const defaultActivityPlayer = {
   id: '',
@@ -61,10 +68,17 @@ const defaultActivityPlayer = {
   status: ''
 }
 
+const statusOptions = [
+  { key: '0', display_name: '已取消' },
+  { key: '1', display_name: '已报名' }
+]
+
 export default {
+  components: { Pagination },
   data() {
     return {
       total: 0,
+      statusOptions,
       activityPlayer: Object.assign({}, defaultActivityPlayer),
       activityPlayerList: [],
       listQuery: {
@@ -80,7 +94,7 @@ export default {
   computed: {
   },
   created() {
-    this.getActivityPlayerInfo()
+    this.getPageList()
   },
   methods: {
     errorHandler() {
@@ -88,10 +102,10 @@ export default {
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getActivityPlayerInfo()
+      this.getPageList()
     },
 
-    async getActivityPlayerInfo() {
+    async getPageList() {
       this.listLoading = true
       getActivityPlayerInfo(this.listQuery).then(response => {
         this.activityPlayerList = response.data.list
@@ -104,11 +118,8 @@ export default {
 
   <style lang="scss" scoped>
   .app-container {
-    .roles-table {
-      margin-top: 30px;
-    }
-    .permission-tree {
-      margin-bottom: 30px;
+    .filter-item {
+      margin-left: 8px;
     }
   }
   </style>
