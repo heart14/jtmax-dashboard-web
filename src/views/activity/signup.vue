@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-select v-model="listQuery.activityId" placeholder="请选择活动" clearable style="width: 200px" class="filter-item">
+        <el-option v-for="item in activityIdNameList" :key="item.activityId" :label="item.activityName" :value="item.activityId" />
+      </el-select>
       <el-input v-model="listQuery.activityName" placeholder="活动名称" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nickname" placeholder="AKA" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.status" placeholder="状态" clearable style="width: 200px" class="filter-item">
@@ -55,7 +58,7 @@
 </template>
 
 <script>
-import { getActivityPlayerInfo } from '@/api/activity'
+import { getActivityPlayerInfo, getAllActivity } from '@/api/activity'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const defaultActivityPlayer = {
@@ -81,6 +84,7 @@ export default {
       statusOptions,
       activityPlayer: Object.assign({}, defaultActivityPlayer),
       activityPlayerList: [],
+      activityIdNameList: [],
       listQuery: {
         page: 1,
         limit: 10,
@@ -95,6 +99,7 @@ export default {
   },
   created() {
     this.getPageList()
+    this.getActivityIdNameList()
   },
   methods: {
     errorHandler() {
@@ -104,12 +109,16 @@ export default {
       this.listQuery.page = 1
       this.getPageList()
     },
-
     async getPageList() {
       this.listLoading = true
       getActivityPlayerInfo(this.listQuery).then(response => {
         this.activityPlayerList = response.data.list
         this.total = response.data.total
+      })
+    },
+    getActivityIdNameList() {
+      getAllActivity().then(response => {
+        this.activityIdNameList = response.data
       })
     }
   }

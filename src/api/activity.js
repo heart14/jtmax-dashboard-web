@@ -9,6 +9,14 @@ export function getActivities(data) {
   })
 }
 
+// 无筛选条件查询所有活动
+export function getAllActivity() {
+  return request({
+    url: '/activity/list',
+    method: 'get'
+  })
+}
+
 export function deleteActivity(activityId) {
   return request({
     url: `/activity/${activityId}`,
