@@ -1,30 +1,15 @@
 <template>
   <div class="components-container">
-    <aside>
-      Based on <a class="link-type" href="https://github.com/rowanwins/vue-dropzone"> dropzone </a>.
-      Because my business has special needs, and has to upload images to qiniu, so instead of a third party, I chose encapsulate it by myself. It is very simple, you can see the detail code in @/components/Dropzone.
-    </aside>
-    <div class="editor-container">
-      <dropzone id="myVueDropzone" url="https://httpbin.org/post" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
-    </div>
+    <el-upload class="upload-demo" drag action="http://127.0.0.1:28080/dashboard/photo/upload" multiple>
+      <i class="el-icon-upload" />
+      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
   </div>
 </template>
 
 <script>
-import Dropzone from '@/components/Dropzone'
-
 export default {
-  name: 'DropzoneDemo',
-  components: { Dropzone },
-  methods: {
-    dropzoneS(file) {
-      console.log(file)
-      this.$message({ message: 'Upload success', type: 'success' })
-    },
-    dropzoneR(file) {
-      console.log(file)
-      this.$message({ message: 'Delete success', type: 'success' })
-    }
-  }
+  name: 'PhotoUpload'
 }
 </script>
