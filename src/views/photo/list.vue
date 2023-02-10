@@ -23,21 +23,23 @@
             <el-image
               style="width: 100px; height: 100px"
               :src="scope.row.networkUrl"
-              :preview-src-list="srcList"
+              :preview-src-list="[scope.row.networkUrl]"
             />
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="OriginName" width="128px">
+      <el-table-column align="left" label="FileName">
         <template slot-scope="scope">
-          {{ scope.row.originName }}
+          原始文件名：<b>{{ scope.row.originName }}</b>
+          <br>
+          存储文件名：<b>{{ scope.row.storageName }}</b>
         </template>
       </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="StorageName">
+      <!-- <el-table-column v-if="showDesc" align="center" label="StorageName">
         <template slot-scope="scope">
           {{ scope.row.storageName }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column v-if="showDesc" align="center" label="Size">
         <template slot-scope="scope">
           {{ scope.row.size }}
@@ -48,12 +50,14 @@
           {{ scope.row.storagePath }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="NetworkUrl">
+      <el-table-column align="left" label="NetworkUrl">
         <template slot-scope="scope">
-          {{ scope.row.networkUrl }}
+          ImageURL: <b>{{ scope.row.networkUrl }}</b>
+          <br>
+          Markdown: <b>![{{ scope.row.storageName }}]({{ scope.row.networkUrl }})</b>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="MediaType" width="128px">
+      <el-table-column v-if="showDesc" align="center" label="MediaType">
         <template slot-scope="scope">
           {{ scope.row.mediaType }}
         </template>
@@ -63,17 +67,17 @@
           {{ scope.row.resourceType }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Creator" width="128px">
+      <el-table-column v-if="showDesc" align="center" label="Creator">
         <template slot-scope="scope">
           {{ scope.row.creator }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Status" width="64px">
+      <el-table-column v-if="showDesc" align="center" label="Status">
         <template slot-scope="scope">
           {{ scope.row.status }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Description">
+      <el-table-column v-if="showDesc" align="center" label="Description">
         <template slot-scope="scope">
           {{ scope.row.description }}
         </template>
@@ -113,11 +117,6 @@ export default {
   components: { Pagination },
   data() {
     return {
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ],
       photo: Object.assign({}, defaultPhoto),
       photoList: [],
       tableKey: 0,
