@@ -2,18 +2,19 @@
   <div class="components-container">
     <el-upload
       class="photo-upload"
-      drag
       action="http://127.0.0.1:28080/dashboard/photo/upload"
+      drag
       multiple
       :on-preview="handlePreview"
       :on-remove="handleRemove"
+      :on-success="handleSuccess"
       :file-list="fileList"
       list-type="picture"
       :headers="headers"
     >
       <i class="el-icon-upload" />
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png/gif文件，且不超过500kb</div>
+      <div slot="tip" class="el-upload__tip">只能上传jpg/png/gif文件，且不超过50mb</div>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="">
@@ -52,6 +53,11 @@ export default {
       console.log(file)
       this.dialogImageUrl = file.url
       this.dialogVisible = true
+    },
+    handleSuccess(res, file, fileList) {
+      if (res.state === 'SUCCESS') {
+        console.log('success')
+      }
     }
   }
 }
