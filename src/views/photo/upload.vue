@@ -49,13 +49,7 @@ export default {
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
-      this.$confirm('确认取消上传?', '图片上传', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async() => {
-        deletePhoto(file.response.data.id)
-      })
+      deletePhoto(file.response.data.id)
     },
     handlePreview(file) {
       console.log(file)
