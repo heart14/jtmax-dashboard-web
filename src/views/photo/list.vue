@@ -5,8 +5,11 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
+      <el-checkbox v-model="showDesc" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        详细描述
+      </el-checkbox>
     </div>
-    <el-table :data="photoList" style="width: 100%;margin-top:30px;" stripe>
+    <el-table :key="tableKey" :data="photoList" style="width: 100%;margin-top:30px;" stripe>
       <!-- <el-table-column align="center" label="头像">
         <template slot-scope="scope">
           <div>
@@ -25,22 +28,22 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="OriginName">
+      <el-table-column align="left" label="OriginName" width="128px">
         <template slot-scope="scope">
           {{ scope.row.originName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="StorageName">
+      <el-table-column v-if="showDesc" align="center" label="StorageName">
         <template slot-scope="scope">
           {{ scope.row.storageName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Size">
+      <el-table-column v-if="showDesc" align="center" label="Size">
         <template slot-scope="scope">
           {{ scope.row.size }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="StoragePath">
+      <el-table-column v-if="showDesc" align="center" label="StoragePath">
         <template slot-scope="scope">
           {{ scope.row.storagePath }}
         </template>
@@ -50,22 +53,22 @@
           {{ scope.row.networkUrl }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="MediaType">
+      <el-table-column align="center" label="MediaType" width="128px">
         <template slot-scope="scope">
           {{ scope.row.mediaType }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="ResourceType">
+      <el-table-column v-if="showDesc" align="center" label="ResourceType">
         <template slot-scope="scope">
           {{ scope.row.resourceType }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Creator">
+      <el-table-column align="center" label="Creator" width="128px">
         <template slot-scope="scope">
           {{ scope.row.creator }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="Status">
+      <el-table-column align="center" label="Status" width="64px">
         <template slot-scope="scope">
           {{ scope.row.status }}
         </template>
@@ -117,6 +120,8 @@ export default {
       ],
       photo: Object.assign({}, defaultPhoto),
       photoList: [],
+      tableKey: 0,
+      showDesc: false, // 控制v-if="showDesc"列显示或者隐藏
       total: 0,
       listQuery: {
         page: 1,
@@ -150,4 +155,9 @@ export default {
 </script>
 
   <style lang="scss" scoped>
+    .app-container {
+    .filter-item {
+      margin-left: 8px;
+    }
+  }
   </style>
