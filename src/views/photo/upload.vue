@@ -2,7 +2,7 @@
   <div class="components-container">
     <el-upload
       class="photo-upload"
-      action="http://127.0.0.1:28080/dashboard/photo/upload"
+      action="http://110.40.192.87:28080/dashboard/photo/upload"
       drag
       multiple
       :on-preview="handlePreview"
