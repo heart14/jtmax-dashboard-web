@@ -273,21 +273,14 @@ $light_gray:#eee;
   // min-height: 100%;
   // width: 100%;
   // background-color: $bg;
-  // overflow: hidden;
+  overflow: hidden;
   width: 100%;
   height: 100%;
   background-image:url('http://110.40.192.87/static/image/2023/2/12/index.jpeg');
   background-size: cover;
   background-position: center;
-  position: relative;
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+  // position: relative;
+  display: flex;
 
   .tips {
     font-size: 14px;
@@ -343,4 +336,31 @@ $light_gray:#eee;
     }
   }
 }
+.login-form {
+    position: relative;
+    z-index: 100;
+    width: 520px;
+    height: 380px;
+    max-width: 100%;
+    margin: 0 auto;
+    margin-top: 160px;
+    padding-top: 25px;
+    padding-left: 45px;
+    padding-right: 45px;
+    overflow: hidden;
+    border-radius: 15px;
+  }
+  .login-form::before {
+    content: '';
+    position: absolute;
+    background: inherit;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    box-shadow: inset 0 0 0 200px rgb(176, 176, 176, 0.755);
+    filter: blur(116px);
+    overflow: hidden;
+  }
 </style>
