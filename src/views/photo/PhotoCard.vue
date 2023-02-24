@@ -10,6 +10,16 @@
       <p>![{{ storageName }}]({{ networkUrl }})</p>
     </div>
 
+    <!-- 失败的card用法
+    <div>
+        <PhotoCard v-for="item in photoList" :id="item.id" :originName="item.originName" :storageName="item.storageName" :description="item.description" :storagePath="item.storagePath" :networkUrl="item.networkUrl"></PhotoCard>
+    </div>
+    import PhotoCard from './PhotoCard.vue'
+
+    export default {
+        components: { PhotoCard },
+        ....
+    } -->
   </div>
 </template>
 
