@@ -125,6 +125,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        resourceType: 1,
         originName: undefined
       }
     }
