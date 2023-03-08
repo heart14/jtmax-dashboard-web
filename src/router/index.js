@@ -133,6 +133,15 @@ export const asyncRoutes = [
           title: '视频放送',
           roles: ['admin', 'mt']
         }
+      },
+      {
+        path: 'upload',
+        component: () => import('@/views/banner/upload'),
+        name: 'BannerUpload',
+        meta: {
+          title: '视频上传',
+          roles: ['admin', 'mt']
+        }
       }
     ]
   },
