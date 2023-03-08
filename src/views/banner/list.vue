@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.originName" placeholder="原始文件名" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.originName" placeholder="文件名" clearable style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -9,79 +9,67 @@
         详细描述
       </el-checkbox>
     </div>
-    <el-table :key="tableKey" :data="photoList" style="width: 100%;margin-top:30px;" stripe>
-      <!-- <el-table-column align="center" label="头像">
+    <el-table :key="tableKey" :data="bannerList" style="width: 100%;margin-top:30px;" stripe>
+      <!-- <el-table-column align="right" label="" width="64">
         <template slot-scope="scope">
           <div>
-            <el-avatar :src="scope.row.avatar" />
+            <div>
+              <el-avatar :src="scope.row.avatar" @error="errorHandler">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
+              </el-avatar>
+            </div>
           </div>
         </template>
       </el-table-column> -->
-      <el-table-column align="right" label="" width="105">
+      <el-table-column align="center" label="文件编号">
         <template slot-scope="scope">
-          <div class="demo-image__preview">
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="scope.row.networkUrl"
-              :preview-src-list="[scope.row.networkUrl]"
-            />
-          </div>
+          {{ scope.row.bannerId }}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="FileName">
+      <el-table-column align="center" label="存储编号">
         <template slot-scope="scope">
-          原始文件名：<b>{{ scope.row.originName }}</b>
-          <br>
-          存储文件名：<b>{{ scope.row.storageName }}</b>
+          {{ scope.row.storageId }}
         </template>
       </el-table-column>
-      <!-- <el-table-column v-if="showDesc" align="center" label="StorageName">
+      <el-table-column align="center" label="文件名">
         <template slot-scope="scope">
-          {{ scope.row.storageName }}
-        </template>
-      </el-table-column> -->
-      <el-table-column v-if="showDesc" align="center" label="Size">
-        <template slot-scope="scope">
-          {{ scope.row.size }}
+          {{ scope.row.originName }}
         </template>
       </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="StoragePath">
-        <template slot-scope="scope">
-          {{ scope.row.storagePath }}
-        </template>
-      </el-table-column>
-      <el-table-column align="left" label="NetworkUrl">
-        <template slot-scope="scope">
-          ImageURL: <b>{{ scope.row.networkUrl }}</b>
-          <br>
-          Markdown: <b>![{{ scope.row.storageName }}]({{ scope.row.networkUrl }})</b>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="MediaType">
+      <el-table-column align="center" label="文件类型">
         <template slot-scope="scope">
           {{ scope.row.mediaType }}
         </template>
       </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="ResourceType">
-        <template slot-scope="scope">
-          {{ scope.row.resourceType }}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="Creator">
-        <template slot-scope="scope">
-          {{ scope.row.creator }}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="Status">
-        <template slot-scope="scope">
-          {{ scope.row.status }}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="showDesc" align="center" label="Description">
+      <el-table-column v-if="showDesc" align="center" label="描述">
         <template slot-scope="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
+      <el-table-column align="center" label="展示状态">
+        <template slot-scope="scope">
+          {{ scope.row.showStatus }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="文件状态">
+        <template slot-scope="scope">
+          {{ scope.row.fileStatus }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="上传时间">
+        <template slot-scope="scope">
+          {{ scope.row.createTime }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column align="center" label="状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row.status==0">正常</span>
+          <span v-else-if="scope.row.status==1">黑名单</span>
+          <span v-else-if="scope.row.status==2">已退群</span>
+          <span v-else-if="scope.row.status==3">已注销</span>
+          <span v-else>未知</span>
+        </template>
+      </el-table-column> -->
       <!-- <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="primary" size="small" :disabled="scope.row.status==1?false:true" @click="handleUnForbid(scope)">解禁</el-button>
@@ -94,21 +82,23 @@
 </template>
 
 <script>
-import { getPhotoList } from '@/api/photo'
+import { getBannerList } from '@/api/banner'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
-const defaultPhoto = {
-  id: '',
+const defaultBanner = {
+  bannerId: '',
+  storageId: '',
   originName: '',
-  storageName: '',
   description: '',
+  showStatus: '',
+  storageName: '',
   size: '',
   storagePath: '',
   networkUrl: '',
   mediaType: '',
   resourceType: '',
   creator: '',
-  status: '',
+  fileStatus: '',
   createTime: '',
   updateTime: ''
 }
@@ -117,8 +107,8 @@ export default {
   components: { Pagination },
   data() {
     return {
-      photo: Object.assign({}, defaultPhoto),
-      photoList: [],
+      banner: Object.assign({}, defaultBanner),
+      bannerList: [],
       tableKey: 0,
       showDesc: false, // 控制v-if="showDesc"列显示或者隐藏
       total: 0,
@@ -136,13 +126,14 @@ export default {
     this.getPageList()
   },
   methods: {
-    errorHandler() {
-      return true
-    },
-    getPageList() {
+    // errorHandler() {
+    //   return true
+    // },
+
+    async getPageList() {
       this.listLoading = true
-      getPhotoList(this.listQuery).then(response => {
-        this.photoList = response.data.list
+      getBannerList(this.listQuery).then(response => {
+        this.bannerList = response.data.list
         this.total = response.data.total
       })
     },
@@ -155,7 +146,8 @@ export default {
 </script>
 
   <style lang="scss" scoped>
-    .app-container {
+
+.app-container {
     .filter-item {
       margin-left: 8px;
     }
