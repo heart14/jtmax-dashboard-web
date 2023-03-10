@@ -14,12 +14,13 @@
       </el-button>
     </div>
     <el-row class="row-box">
-      <el-col v-for="item in photoList" :key="item.id" :span="6" :offset="0">
+      <el-col v-for="item in photoList" :key="item.id" :span="4" :offset="0">
         <el-card class="el-card" :body-style="{ padding: '0px' }" shadow="hover">
-          <img :src="item.networkUrl" class="image">
-          <div style="padding: 14px;">
+          <el-image class="el-image" :src="item.networkUrl" :preview-src-list="[item.networkUrl]" />
+          <div style="padding: 9px;background-color: #F5F5DC;">
             <span>{{ item.originName }}</span>
             <div class="bottom clearfix">
+              <time class="time">@ {{ item.creator }}</time><br>
               <time class="time">{{ item.createTime }}</time>
             </div>
             <div>
@@ -63,7 +64,7 @@ export default {
       total: 0,
       listQuery: {
         page: 1,
-        limit: 10,
+        limit: 12,
         resourceType: 1,
         originName: undefined
       }
@@ -114,11 +115,6 @@ export default {
     // float: right;
   }
 
-  .image {
-    width: 100%;
-    display: block;
-  }
-
   .clearfix:before,
   .clearfix:after {
     display: table;
@@ -133,9 +129,15 @@ export default {
     display: flex;
     flex-wrap: wrap;
   }
+
   .row-box .el-card {
     min-width: 100%;
     height: 100%;
+  }
+
+  .el-image {
+    width: 100%;
+    height: 200px;
   }
 }
 </style>
