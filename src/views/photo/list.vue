@@ -24,8 +24,9 @@
               <time class="time">{{ item.createTime }}</time>
             </div>
             <div>
-              <el-button type="text" class="button" @click="handleCopyNet(item.networkUrl,$event)">Net</el-button>
-              <el-button type="text" class="button" @click="handleCopyMD(item.originName,item.networkUrl,$event)">MD</el-button>
+              <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyNet(item.networkUrl,$event)"> Net </el-button>
+              <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyMD(item.originName,item.networkUrl,$event)"> MD </el-button>
+              <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item.id)" />
             </div>
           </div>
         </el-card>
@@ -97,6 +98,9 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getPageList()
+    },
+    handleDelete(id) {
+
     }
   }
 }
@@ -114,13 +118,19 @@ export default {
   }
 
   .bottom {
-    margin-top: 13px;
-    line-height: 12px;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    line-height: 11px;
   }
 
-  .button {
-    padding: 0;
+  .button-cp {
+    padding: 2px;
     // float: right;
+  }
+
+  .button-del {
+    padding: 2px;
+    float: right;
   }
 
   .clearfix:before,
