@@ -14,7 +14,7 @@
       </el-button>
     </div>
     <el-row class="row-box">
-      <el-col v-for="item in photoList" :key="item.id" :span="4" :offset="0">
+      <el-col v-for="item in photoList" :key="item.photoId" :span="4" :offset="0">
         <el-card class="el-card" :body-style="{ padding: '0px' }" shadow="hover">
           <el-image class="el-image" :src="item.networkUrl" :preview-src-list="[item.networkUrl]" />
           <div style="padding: 9px;background-color: #F5F5DC;">
@@ -26,7 +26,7 @@
             <div>
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyNet(item.networkUrl,$event)"> Net </el-button>
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyMD(item.originName,item.networkUrl,$event)"> MD </el-button>
-              <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item.id)" />
+              <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item.photoId)" />
             </div>
           </div>
         </el-card>
@@ -37,22 +37,26 @@
 </template>
 
 <script>
-import { getPhotoList } from '@/api/photo'
+import { getPhotoList, deletePhoto } from '@/api/photo'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import clip from '@/utils/clipboard' // use clipboard directly
 
 const defaultPhoto = {
-  id: '',
+  photoId: '',
+  storageId: '',
   originName: '',
-  storageName: '',
   description: '',
-  size: '',
+  deleteStatus: '',
+  likesNumber: '',
+  dlNumber: '',
+  storageName: '',
   storagePath: '',
+  size: '',
   networkUrl: '',
   mediaType: '',
   resourceType: '',
   creator: '',
-  status: '',
+  fileStatus: '',
   createTime: '',
   updateTime: ''
 }
@@ -99,8 +103,8 @@ export default {
       this.listQuery.page = 1
       this.getPageList()
     },
-    handleDelete(id) {
-
+    handleDelete(photoId) {
+      deletePhoto(photoId)
     }
   }
 }
