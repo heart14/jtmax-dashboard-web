@@ -14,7 +14,7 @@
       </el-button>
     </div>
     <el-row class="row-box">
-      <el-col v-for="item in photoList" :key="item.photoId" :span="4" :offset="0">
+      <el-col v-for="(item,index) in photoList" :key="item.photoId" :span="4" :offset="0">
         <el-card class="el-card" :body-style="{ padding: '0px' }" shadow="hover">
           <el-image class="el-image" :src="item.networkUrl" :preview-src-list="[item.networkUrl]" />
           <div style="padding: 9px;background-color: #F5F5DC;">
@@ -26,7 +26,7 @@
             <div>
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyNet(item.networkUrl,$event)"> Net </el-button>
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyMD(item.originName,item.networkUrl,$event)"> MD </el-button>
-              <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item.photoId)" />
+              <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item,index)" />
             </div>
           </div>
         </el-card>
@@ -103,8 +103,22 @@ export default {
       this.listQuery.page = 1
       this.getPageList()
     },
-    handleDelete(photoId) {
-      deletePhoto(photoId)
+    handleDelete(item, index) {
+      this.$confirm('确认删除该图片?', '删除图片', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          await deletePhoto(item.photoId)
+          this.photoList.splice(index, 1)
+          this.total = this.total - 1
+          this.$message({
+            type: 'success',
+            message: '图片删除成功！'
+          })
+        })
+        .catch(err => { console.error(err) })
     }
   }
 }

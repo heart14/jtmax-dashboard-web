@@ -9,9 +9,9 @@ export function getPhotoList(data) {
 }
 
 // 删除图片
-export function deletePhoto(id) {
+export function deletePhoto(photoId) {
   return request({
-    url: `/photo/${id}`,
+    url: `/photo/${photoId}`,
     method: 'delete'
   })
 }
