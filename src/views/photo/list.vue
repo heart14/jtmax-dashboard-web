@@ -24,8 +24,8 @@
               <time class="time">{{ item.createTime }}</time>
             </div>
             <div>
-              <el-button type="text" class="button">Net</el-button>
-              <el-button type="text" class="button">MD</el-button>
+              <el-button type="text" class="button" @click="handleCopyNet(item.networkUrl,$event)">Net</el-button>
+              <el-button type="text" class="button" @click="handleCopyMD(item.originName,item.networkUrl,$event)">MD</el-button>
             </div>
           </div>
         </el-card>
@@ -38,6 +38,7 @@
 <script>
 import { getPhotoList } from '@/api/photo'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import clip from '@/utils/clipboard' // use clipboard directly
 
 const defaultPhoto = {
   id: '',
@@ -76,6 +77,13 @@ export default {
     this.getPageList()
   },
   methods: {
+    handleCopyNet(text, event) {
+      clip(text, event)
+    },
+    handleCopyMD(name, text, event) {
+      const mdUrl = '![' + name + '](' + text + ')'
+      clip(mdUrl, event)
+    },
     errorHandler() {
       return true
     },
