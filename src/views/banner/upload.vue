@@ -14,10 +14,10 @@
     >
       <i class="el-icon-upload" />
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png/gif文件，且不超过50mb</div>
+      <div slot="tip" class="el-upload__tip">只能上传mp4文件，且不超过50mb</div>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
+      <video width="100%" :src="dialogImageUrl" alt="" />
     </el-dialog>
   </div>
 </template>
