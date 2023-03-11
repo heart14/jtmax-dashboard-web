@@ -65,3 +65,5 @@ http://www.imxmx.com/Item/1/79069.html
 https://www.cnblogs.com/huang-guosheng/p/16908977.html
 #### vue.config.js说明
 https://blog.csdn.net/weixin_35773751/article/details/123414144
+#### 动态路由权限管理？
+https://juejin.cn/post/6844904150912729096
