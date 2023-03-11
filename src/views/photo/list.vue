@@ -17,7 +17,7 @@
       <el-col v-for="(item,index) in photoList" :key="item.photoId" :span="4" :offset="0">
         <el-card class="el-card" :body-style="{ padding: '0px' }" shadow="hover">
           <el-image class="el-image" :src="item.networkUrl" :preview-src-list="[item.networkUrl]" />
-          <div style="padding: 9px;background-color: #F5F5DC;">
+          <div style="padding: 9px;background-color: #F8F8FF;">
             <span>{{ item.originName }}</span>
             <div class="bottom clearfix">
               <time class="time">@ {{ item.creator }}</time><br>
@@ -32,7 +32,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getPageList" />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" :page-sizes="[6, 12, 24, 32, 48]" @pagination="getPageList" />
   </div>
 </template>
 
