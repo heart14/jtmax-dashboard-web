@@ -101,8 +101,8 @@ export default {
     }
     return { // data() 返回的属性将会成为响应式的状态
       loginForm: {
-        username: '18010960104', // 页面表单默认placeholder值
-        password: 'pwd123' // 页面表单默认placeholder值
+        username: '', // 页面表单默认placeholder值
+        password: '' // 页面表单默认placeholder值
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
