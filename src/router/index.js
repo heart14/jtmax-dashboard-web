@@ -122,7 +122,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头大屏幕', // 导航栏中菜单名字
       icon: 'el-icon-video-camera-solid', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -131,7 +131,7 @@ export const asyncRoutes = [
         name: 'BannerList',
         meta: {
           title: '视频放送',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       },
       {
@@ -140,7 +140,7 @@ export const asyncRoutes = [
         name: 'BannerUpload',
         meta: {
           title: '视频上传',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       }
     ]
@@ -154,7 +154,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头公告栏', // 导航栏中菜单名字
       icon: 'el-icon-data-analysis', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -163,7 +163,7 @@ export const asyncRoutes = [
         name: 'ActivityList',
         meta: {
           title: '活动列表',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       },
       {
@@ -172,7 +172,7 @@ export const asyncRoutes = [
         name: 'Signup',
         meta: {
           title: '报名信息',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       }
     ]
@@ -186,7 +186,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头历史书', // 导航栏中菜单名字
       icon: 'el-icon-notebook-2', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -195,7 +195,7 @@ export const asyncRoutes = [
         name: 'Info',
         meta: {
           title: '社团介绍',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       },
       {
@@ -204,7 +204,7 @@ export const asyncRoutes = [
         name: 'History',
         meta: {
           title: '发展历史',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       }
     ]
@@ -218,7 +218,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头黑板报', // 导航栏中菜单名字
       icon: 'el-icon-s-grid', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -227,7 +227,7 @@ export const asyncRoutes = [
         name: 'NewsList',
         meta: {
           title: '活动图文列表',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       },
       {
@@ -236,7 +236,7 @@ export const asyncRoutes = [
         name: 'NewsCreate',
         meta: {
           title: '新建活动图文',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       },
       {
@@ -261,7 +261,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头画廊', // 导航栏中菜单名字
       icon: 'el-icon-picture', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -270,7 +270,7 @@ export const asyncRoutes = [
         name: 'PhotoList',
         meta: {
           title: '图片列表',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt', 'jtp']
         }
       },
       {
@@ -279,7 +279,7 @@ export const asyncRoutes = [
         name: 'PhotoUpload',
         meta: {
           title: '图片上传',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt', 'jtp']
         }
       }
     ]
@@ -293,7 +293,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头档案馆', // 导航栏中菜单名字
       icon: 'el-icon-wallet', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -302,7 +302,7 @@ export const asyncRoutes = [
         name: 'DocsList',
         meta: {
           title: '社团资料',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       }
     ]
@@ -316,7 +316,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头留言板', // 导航栏中菜单名字
       icon: 'el-icon-message', // 导航栏中菜单图标
-      roles: ['admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt'] // 配置权限
     },
     children: [
       {
@@ -325,7 +325,7 @@ export const asyncRoutes = [
         name: 'MessageList',
         meta: {
           title: '留言列表',
-          roles: ['admin', 'mt']
+          roles: ['super', 'admin', 'mt']
         }
       }
     ]
@@ -339,7 +339,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头人事科', // 导航栏中菜单名字
       icon: 'user', // 导航栏中菜单图标
-      roles: ['admin'] // 配置权限
+      roles: ['super', 'admin'] // 配置权限
     },
     children: [
       {
@@ -348,7 +348,7 @@ export const asyncRoutes = [
         name: 'UserList',
         meta: {
           title: '用户列表',
-          roles: ['admin']
+          roles: ['super', 'admin']
         }
       },
       {
@@ -357,7 +357,7 @@ export const asyncRoutes = [
         name: 'Permission',
         meta: {
           title: '权限设置',
-          roles: ['admin']
+          roles: ['super', 'admin']
         }
       },
       {
@@ -366,7 +366,7 @@ export const asyncRoutes = [
         name: 'Role',
         meta: {
           title: '角色设置',
-          roles: ['admin']
+          roles: ['super', 'admin']
         }
       }
     ]
