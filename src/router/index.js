@@ -261,7 +261,7 @@ export const asyncRoutes = [
     meta: {
       title: '街头画廊', // 导航栏中菜单名字
       icon: 'el-icon-picture', // 导航栏中菜单图标
-      roles: ['super', 'admin', 'mt'] // 配置权限
+      roles: ['super', 'admin', 'mt', 'jtp'] // 配置权限
     },
     children: [
       {
