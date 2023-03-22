@@ -15,3 +15,10 @@ export function deletePhoto(photoId) {
     method: 'delete'
   })
 }
+
+export function downloadPhoto(photoId) {
+  return request({
+    url: `/photo/${photoId}`,
+    method: 'get'
+  })
+}

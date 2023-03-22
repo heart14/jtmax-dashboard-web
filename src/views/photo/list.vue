@@ -27,6 +27,7 @@
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyNet(item.networkUrl,$event)"> Net </el-button>
               <el-button type="primary" size="mini" round class="button-cp" @click="handleCopyMD(item.originName,item.networkUrl,$event)"> MD </el-button>
               <el-button type="danger" size="mini" round class="button-del" icon="el-icon-delete" @click="handleDelete(item,index)" />
+              <a class="button-del el-icon-download" :href="item.networkUrl" download="" />
             </div>
           </div>
         </el-card>
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-import { getPhotoList, deletePhoto } from '@/api/photo'
+import { getPhotoList, deletePhoto, downloadPhoto } from '@/api/photo'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import clip from '@/utils/clipboard' // use clipboard directly
 
@@ -119,6 +120,11 @@ export default {
           })
         })
         .catch(err => { console.error(err) })
+    },
+    handleDownload(photoId) {
+      downloadPhoto(photoId).then(blob => {
+        console.log(blob)
+      })
     }
   }
 }
